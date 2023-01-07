@@ -13,7 +13,7 @@ if __name__ == '__main__':
     path = HLS_DIR + "/" + text
     os.mkdir(path)
 
-    os.symlink(path, CURRENT_DIR)
+    os.symlink(os.path.abspath(path), CURRENT_DIR)
 
     playlistLocation = os.path.abspath(CURRENT_DIR + "/" + PLAYLIST_FILENAME)
     mediaLocation = os.path.abspath(CURRENT_DIR + "/" + "segment%05d.ts")
