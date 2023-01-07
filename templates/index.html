@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <link href="{{ url_for('static',filename='assets/css/video-js.min.css') }}" rel="stylesheet">
+    <title>HTTP Live Streaming</title>
+</head>
+<body>
+<h1>HTTP Live Streaming</h1>
+{% for date, file in play_list_files_map %}
+<div>
+    <p>{{ date_format(date) }}</p>
+    <video class="video video-js vjs-default-skin vjs-big-play-centered video-js-fullscreen">
+        <source src="{{ url_for('static',filename=file) }}" type="application/x-mpegURL">
+    </video>
+    <a href="{{ url_for('video_download', date_dir=date) }}">ビデオをダウンロード</a>
+    <a href="{{ url_for('video_delete', date_dir=date) }}">ビデオを削除</a>
+</div>
+{% endfor %}
+</body>
+<script src="{{ url_for('static', filename='assets/js/video.min.js') }}"></script>
+<script>
+    var videos = document.getElementsByTagName("video");
+    for (var i = 0; i < videos.length; i++) {
+        var player = videojs(videos[i], {"preload": "auto", "height": "360", "controls": true, "techOrder": ["html5"]})
+    }
+</script>
+</html>

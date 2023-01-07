@@ -1,10 +1,8 @@
 import os
 import subprocess
 import datetime
+from constants import *
 
-WWW_DIR = "www"
-CURRENT_DIR = WWW_DIR + "/" + "current"
-HLS_DIR = WWW_DIR + "/" + "hls"
 
 if __name__ == '__main__':
 
@@ -17,7 +15,7 @@ if __name__ == '__main__':
 
     os.symlink(path, CURRENT_DIR)
 
-    playlistLocation = HLS_DIR + "/" + "playlist.m3u8"
+    playlistLocation = HLS_DIR + "/" + PLAYLIST_FILENAME
     mediaLocation = HLS_DIR + "/" + "segment%05d.ts"
 
     # TODO LEDで青色にする

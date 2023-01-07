@@ -1,0 +1,6 @@
+WWW_DIR = "www"
+HLS_DIR_NAME = "hls"
+CURRENT_DIR_NAME = "current"
+CURRENT_DIR = WWW_DIR + "/" + CURRENT_DIR_NAME
+HLS_DIR = WWW_DIR + "/" + HLS_DIR_NAME
+PLAYLIST_FILENAME = "playlist.m3u8"
