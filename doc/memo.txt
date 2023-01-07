@@ -8,9 +8,13 @@ Wants=default.target
 [Service]
 User=pi
 Group=pi
-WorkingDirectory=/home/pi/network_drive_recorder
+Environment=WORK_DIR=/home/pi/network_drive_recorder
+WorkingDirectory=${WORK_DIR}
 ExecStart=/usr/bin/python video-record.py
-Type=idle
+Restart=always
+Type=simple
+StandardOutput=file:${WORK_DIR}/tmp/record_stdout.log
+StandardError=file:${WORK_DIR}/tmp/record_stderr.log
 
 [Install]
 WantedBy=default.target
@@ -28,9 +32,14 @@ Wants=default.target
 [Service]
 User=pi
 Group=pi
-WorkingDirectory=/home/pi/network_drive_recorder
-ExecStart=/usr/bin/python web-server.py
-Type=idle
+Environment=WORK_DIR=/home/pi/network_drive_recorder
+EnvironmentFile=${WORK_DIR}/enviroments
+WorkingDirectory=${WORK_DIR}
+ExecStart=/usr/bin/python -m flask --app web-server.py run
+Restart=always
+Type=simple
+StandardOutput=file:${WORK_DIR}/tmp/server_stdout.log
+StandardError=file:${WORK_DIR}/tmp/server_stderr.log
 
 [Install]
 WantedBy=default.target
