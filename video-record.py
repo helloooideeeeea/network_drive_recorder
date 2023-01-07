@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     os.symlink(path, CURRENT_DIR)
 
-    playlistLocation = CURRENT_DIR + "/" + PLAYLIST_FILENAME
-    mediaLocation = CURRENT_DIR + "/" + "segment%05d.ts"
+    playlistLocation = os.path.abspath(CURRENT_DIR + "/" + PLAYLIST_FILENAME)
+    mediaLocation = os.path.abspath(CURRENT_DIR + "/" + "segment%05d.ts")
 
     # TODO LEDで青色にする
     ret = subprocess.call(
