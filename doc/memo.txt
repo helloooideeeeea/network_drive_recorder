@@ -1,0 +1,43 @@
+
+sudo tee -a /etc/systemd/system/video-record.service > /dev/null << EOT
+[Unit]
+Description=Start Video Record
+After=default.target
+Wants=default.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/network_drive_recorder
+ExecStart=/usr/bin/python video-record.py
+Type=idle
+
+[Install]
+WantedBy=default.target
+EOT
+
+sudo /usr/bin/systemctl daemon-reload
+sudo /usr/bin/systemctl enable video-record.service
+
+sudo tee -a /etc/systemd/system/web-server.service > /dev/null << EOT
+[Unit]
+Description=Start Web Server
+After=default.target
+Wants=default.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/network_drive_recorder
+ExecStart=/usr/bin/python web-server.py
+Type=idle
+
+[Install]
+WantedBy=default.target
+EOT
+
+sudo /usr/bin/systemctl daemon-reload
+sudo /usr/bin/systemctl enable web-server.service
+
+
+gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format="%D %H:%M:%S" ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 target-duration=10 location=/home/pi/www/hls/segment%05d.ts playlist-location=/home/pi/www/hls/playlist.m3u8 sync=false
