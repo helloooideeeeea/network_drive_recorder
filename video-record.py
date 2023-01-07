@@ -20,6 +20,6 @@ if __name__ == '__main__':
 
     # TODO LEDで青色にする
     ret = subprocess.call(
-        f"gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format='%D %H:%M:%S' ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 target-duration=10 location=${mediaLocation} playlist-location=${playlistLocation} sync=false")
+        f"gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format='%D %H:%M:%S' ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 target-duration=10 location={mediaLocation} playlist-location={playlistLocation} sync=false")
 
     # TODO LEDで赤色にして、さらにブザーを鳴らす
