@@ -1,3 +1,5 @@
+python -m pip install -r requirements.txt
+
 
 sudo tee -a /etc/systemd/system/video-record.service > /dev/null << EOT
 [Unit]
@@ -8,13 +10,12 @@ Wants=default.target
 [Service]
 User=pi
 Group=pi
-Environment=WORK_DIR=/home/pi/network_drive_recorder
-WorkingDirectory=${WORK_DIR}
+WorkingDirectory=/home/pi/network_drive_recorder
 ExecStart=/usr/bin/python video-record.py
 Restart=always
 Type=simple
-StandardOutput=file:${WORK_DIR}/tmp/record_stdout.log
-StandardError=file:${WORK_DIR}/tmp/record_stderr.log
+StandardOutput=file:/home/pi/network_drive_recorder/tmp/record_stdout.log
+StandardError=file:/home/pi/network_drive_recorder/tmp/record_stderr.log
 
 [Install]
 WantedBy=default.target
@@ -22,6 +23,7 @@ EOT
 
 sudo /usr/bin/systemctl daemon-reload
 sudo /usr/bin/systemctl enable video-record.service
+
 
 sudo tee -a /etc/systemd/system/web-server.service > /dev/null << EOT
 [Unit]
@@ -32,14 +34,13 @@ Wants=default.target
 [Service]
 User=pi
 Group=pi
-Environment=WORK_DIR=/home/pi/network_drive_recorder
-EnvironmentFile=${WORK_DIR}/enviroments
-WorkingDirectory=${WORK_DIR}
+EnvironmentFile=/home/pi/network_drive_recorder/enviroments
+WorkingDirectory=/home/pi/network_drive_recorder
 ExecStart=/usr/bin/python -m flask --app web-server.py run
 Restart=always
 Type=simple
-StandardOutput=file:${WORK_DIR}/tmp/server_stdout.log
-StandardError=file:${WORK_DIR}/tmp/server_stderr.log
+StandardOutput=file:/home/pi/network_drive_recorder/tmp/server_stdout.log
+StandardError=file:/home/pi/network_drive_recorder/tmp/server_stderr.log
 
 [Install]
 WantedBy=default.target
@@ -48,5 +49,10 @@ EOT
 sudo /usr/bin/systemctl daemon-reload
 sudo /usr/bin/systemctl enable web-server.service
 
+起動ログ確認
+sudo journalctl -u web-server.service
+sudo journalctl -u video-record.service
+ジャーナルログの削除
+sudo journalctl --vacuum-size=1K
 
 gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format="%D %H:%M:%S" ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 target-duration=10 location=/home/pi/www/hls/segment%05d.ts playlist-location=/home/pi/www/hls/playlist.m3u8 sync=false
