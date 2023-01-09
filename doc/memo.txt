@@ -56,14 +56,14 @@ sudo journalctl -u video-record.service
 sudo journalctl --vacuum-size=1K
 
 HLS配信
-gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format="%D %H:%M:%S" ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 playlist-length=0 target-duration=10 location=/home/pi/www/hls/segment%05d.ts playlist-location=/home/pi/www/hls/playlist.m3u8 sync=false
+gst-launch-1.0 libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format="%D %H:%M:%S" ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 playlist-length=0 target-duration=10 location=/home/pi/www/hls/segment%05d.ts playlist-location=/home/pi/www/hls/playlist.m3u8 sync=true
 
 RTSP配信(RTMPより体感早い)
 ./test-launch "libcamerasrc ! videoconvert ! videoscale ! clockoverlay time-format='%D %H:%M:%S' ! v4l2h264enc ! video/x-h264,level=(string)4 ! rtph264pay name=pay0 pt=96"
 
 RTSP受信
 # 出力hls
-gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/test ntp-sync=true ! application/x-rtp, media=video, encoding-name=H264 ! queue ! rtph264depay ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 playlist-length=0 target-duration=10 location=./segment%05d.ts playlist-location=./playlist.m3u8 sync=false
+gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/test ntp-sync=true ! application/x-rtp, media=video, encoding-name=H264 ! queue ! rtph264depay ! h264parse ! mpegtsmux name=mux ! hlssink max-files=0 playlist-length=0 target-duration=10 location=./segment%05d.ts playlist-location=./playlist.m3u8 sync=true
 # mp4 （電源切れると消える）
 gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/test ntp-sync=true ! application/x-rtp, media=video, encoding-name=H264 ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=test5.mp4 sync=false
 #gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/test protocols=tcp ! rtph264depay ! h264parse ! mp4mux ! filesink location=test5.mp4 sync=false
